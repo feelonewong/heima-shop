@@ -3,7 +3,7 @@ import { http } from '@/utils/http'
 const getData = () => {
   http({
     method: 'GET',
-    url: '/home/banner',
+    url: '',
   }).then((res) => {
     console.log(res, 'res')
   })

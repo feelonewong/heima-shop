@@ -29,9 +29,32 @@ export const http = (options: UniApp.RequestOptions) => {
   return new Promise((resolve, reject) => {
     uni.request({
       ...options,
-      success(res) {
-        resolve(res.data)
+      success(res: any) {
+        if (res.statusCode >= 200 && res.statusCode <= 300) {
+          resolve(res.data)
+        } else if (res.statusCode === 401) {
+          // 401 跳转到登录页
+          const member = useMemberStore()
+          member.clearProfile()
+          uni.navigateTo({
+            url: '/pages/login/login',
+          })
+          reject(res)
+        }else {
+          uni.showToast({
+            icon: 'none',
+            title: res.data?.msg || '请求错误'
+          })
+          reject(res)
+        }
       },
+      fail(err){
+        uni.showToast({
+          icon: 'none',
+          title: '网络异常'
+        })
+        reject(err)
+      }
     })
   })
 }
