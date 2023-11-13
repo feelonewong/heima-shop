@@ -1,20 +1,27 @@
 <script setup lang="ts">
-import { http } from '@/utils/http'
-const getData = () => {
-  http({
-    method: 'GET',
-    url: '',
-  }).then((res) => {
-    console.log(res, 'res')
+import { onMounted, ref } from 'vue'
+import CustomNavbar from './components/CustomNavbar.vue'
+import { onLoad } from '@dcloudio/uni-app'
+import XtxSwiper from '@/components/XtxSwiper.vue'
+import { getHomeBannerAPI } from '@/services/home'
+const bannerList = ref([])
+const getHomeBannerData = () => {
+  getHomeBannerAPI().then((res: any) => {
+    if (res.code === '1') {
+      bannerList.value = res.result
+    }
   })
 }
+onLoad(() => {
+  getHomeBannerData()
+})
 </script>
 
 <template>
-  <button hover-class="button-hover" @click="getData">获取用户信息</button>
-  <uni-card>
-    <text>这是一个基础卡片示例，内容较少，此示例展示了一个没有任何属性不带阴影的卡片。</text>
-  </uni-card>
+  <view>
+    <CustomNavbar></CustomNavbar>
+    <XtxSwiper :list="bannerList"></XtxSwiper>
+  </view>
 </template>
 
 <style lang="scss">
